@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders-service
+  namespace: mybookstore
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: orders-service
+  template:
+    metadata:
+      labels:
+        app: orders-service
+    spec:
+      containers:
+        - name: orders-service
+          image: <ECR_REGISTRY>/orders-service:latest
+          ports:
+            - name: http
+              containerPort: 3006
+          env:
+            - name: HTTP_PORT
+              value: "3006"
+            - name: NODE_ENV
+              value: "production"
+            - name: AWS_REGION
+              valueFrom: { configMapKeyRef: { name: app-config, key: AWS_REGION } }
+            - name: ORDERS_TABLE
+              valueFrom: { configMapKeyRef: { name: app-config, key: ORDERS_TABLE } }
+            - name: CATALOG_GRPC_URL
+              valueFrom: { configMapKeyRef: { name: app-config, key: CATALOG_GRPC_URL } }
+            - name: CART_GRPC_URL
+              valueFrom: { configMapKeyRef: { name: app-config, key: CART_GRPC_URL } }
+            - name: JWT_SECRET
+              valueFrom: { secretKeyRef: { name: app-secrets, key: JWT_SECRET } }
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom: { secretKeyRef: { name: aws-credentials, key: AWS_ACCESS_KEY_ID } }
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom: { secretKeyRef: { name: aws-credentials, key: AWS_SECRET_ACCESS_KEY } }
+            - name: AWS_SESSION_TOKEN
+              valueFrom: { secretKeyRef: { name: aws-credentials, key: AWS_SESSION_TOKEN } }
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3006
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests: { cpu: "100m", memory: "128Mi" }
+            limits:   { cpu: "500m", memory: "256Mi" }

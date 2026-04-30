@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: mybookstore
+data:
+  AWS_REGION: "us-east-1"
+  BOOKS_TABLE: "tb_books"
+  REVIEWS_TABLE: "tb_reviews"
+  CARTS_TABLE: "tb_carts"
+  ORDERS_TABLE: "tb_orders"
+  CATALOG_GRPC_URL: "catalog-service:50053"
+  USERS_GRPC_URL: "users-service:50052"
+  CART_GRPC_URL: "cart-service:50055"

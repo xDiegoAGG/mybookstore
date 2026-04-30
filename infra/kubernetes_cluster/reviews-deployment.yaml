@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reviews-service
+  namespace: mybookstore
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: reviews-service
+  template:
+    metadata:
+      labels:
+        app: reviews-service
+    spec:
+      containers:
+        - name: reviews-service
+          image: <ECR_REGISTRY>/reviews-service:latest
+          ports:
+            - name: http
+              containerPort: 3004
+          env:
+            - name: HTTP_PORT
+              value: "3004"
+            - name: NODE_ENV
+              value: "production"
+            - name: AWS_REGION
+              valueFrom: { configMapKeyRef: { name: app-config, key: AWS_REGION } }
+            - name: REVIEWS_TABLE
+              valueFrom: { configMapKeyRef: { name: app-config, key: REVIEWS_TABLE } }
+            - name: USERS_GRPC_URL
+              valueFrom: { configMapKeyRef: { name: app-config, key: USERS_GRPC_URL } }
+            - name: JWT_SECRET
+              valueFrom: { secretKeyRef: { name: app-secrets, key: JWT_SECRET } }
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom: { secretKeyRef: { name: aws-credentials, key: AWS_ACCESS_KEY_ID } }
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom: { secretKeyRef: { name: aws-credentials, key: AWS_SECRET_ACCESS_KEY } }
+            - name: AWS_SESSION_TOKEN
+              valueFrom: { secretKeyRef: { name: aws-credentials, key: AWS_SESSION_TOKEN } }
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3004
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests: { cpu: "100m", memory: "128Mi" }
+            limits:   { cpu: "500m", memory: "256Mi" }
