@@ -1,9 +1,45 @@
-import React, { useContext } from "react";
-import { Container, Card, Row, Col, ListGroup, Image } from "react-bootstrap";
+import React, { useContext, useEffect, useState } from "react";
+import { Container, Card, Row, Col, ListGroup, Form, Button } from "react-bootstrap";
 import { AuthContext } from "../context/AuthContext.jsx";
+import { api } from "../lib/api";
 
 const ProfileScreen = () => {
   const { user } = useContext(AuthContext);
+  const [profile, setProfile] = useState(null);
+  const [name, setName] = useState("");
+  const [address, setAddress] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    if (!user) return;
+    const load = async () => {
+      try {
+        const { data } = await api.get("/api/users/me");
+        setProfile(data);
+        setName(data.name || "");
+        setAddress(data.address || "");
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    load();
+  }, [user]);
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    setMessage("");
+    try {
+      const { data } = await api.put("/api/users/me", { name, address });
+      setProfile(data);
+      setMessage("Perfil actualizado");
+    } catch (err) {
+      setMessage(err.response?.data?.message || "Error al guardar");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   if (!user) {
     return (
@@ -13,56 +49,45 @@ const ProfileScreen = () => {
     );
   }
 
-  const profile = {
-    firstName: user.firstName,
-    lastName: user.lastName,
-    username: user.username,
-    email: user.email,
-    phone: user.phone,
-    image: user.image,
-    address: user.address.address,
-    city: user.address.city,
-    state: user.address.state,
-    postalCode: user.address.postalCode,
-    country: user.address.country
-  };
-
-
-
   return (
     <Container className="py-5">
-      <h2 className="mb-4" style={{ marginLeft: 0 }}>Mi Perfil</h2>
+      <h2 className="mb-4">Mi Perfil</h2>
       <Row className="justify-content-center">
-        <Col md={10}>
+        <Col md={8}>
           <Card className="shadow rounded-4 p-4">
-            <Row>
-              <Col md={4} className="d-flex justify-content-center align-items-start">
-                <Image
-                  src={profile.image}
-                  roundedCircle
-                  style={{ width: "150px", height: "150px", objectFit: "cover" }}
+            <ListGroup variant="flush" className="mb-3">
+              <ListGroup.Item>
+                <strong>Email:</strong> {profile?.email || user.email}
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <strong>UserId:</strong> {user.userId}
+              </ListGroup.Item>
+            </ListGroup>
+
+            <Form onSubmit={handleSave}>
+              <Form.Group className="mb-3">
+                <Form.Label>Nombre</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                 />
-              </Col>
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Dirección</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                />
+              </Form.Group>
 
-              <Col md={8}>
-                <h3>
-                  {profile.firstName} {profile.lastName} ({profile.username})
-                </h3>
+              {message && <p>{message}</p>}
 
-                <ListGroup variant="flush">
-                  <ListGroup.Item>
-                    <strong>Email:</strong> {profile.email}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    <strong>Teléfono:</strong> {profile.phone}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    <strong>Dirección:</strong>{" "}
-                    {`${profile.address}, ${profile.city}, ${profile.state}, ${profile.postalCode}, ${profile.country}`}
-                  </ListGroup.Item>
-                </ListGroup>
-              </Col>
-            </Row>
+              <Button type="submit" disabled={saving} className="rounded-pill">
+                {saving ? "Guardando..." : "Guardar cambios"}
+              </Button>
+            </Form>
           </Card>
         </Col>
       </Row>

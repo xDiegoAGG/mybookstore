@@ -1,37 +1,44 @@
-import { createContext, useState } from "react";
-import axios from "axios";
+import { createContext, useState, useEffect } from "react";
+import { api } from "../lib/api";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    const stored = localStorage.getItem("user");
+    return stored ? JSON.parse(stored) : null;
+  });
 
-  const login = async (username, password) => {
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("user");
+    }
+  }, [user]);
+
+  const login = async (email, password) => {
     try {
-      const { data } = await axios.post("https://dummyjson.com/auth/login", {
-        username,
-        password,
-      });
-
-      console.log("Usuario autenticado:", data);
-
-      const userId = data.id;
-      const fullUserRes = await axios.get(
-        `https://dummyjson.com/users/${userId}`
-      );
-
-      const fullUser = fullUserRes.data;
-      setUser({
-        ...fullUser,
-        token: data.token,
-      });      
-
+      const { data } = await api.post("/api/auth/login", { email, password });
+      localStorage.setItem("token", data.token);
+      setUser({ userId: data.userId, email: data.email, name: data.name });
     } catch (err) {
       throw new Error(err.response?.data?.message || "Credenciales inválidas");
     }
   };
 
+  const register = async (name, email, password) => {
+    try {
+      const { data } = await api.post("/api/auth/register", { name, email, password });
+      localStorage.setItem("token", data.token);
+      setUser({ userId: data.userId, email: data.email, name: data.name });
+    } catch (err) {
+      throw new Error(err.response?.data?.message || "No se pudo registrar");
+    }
+  };
+
   const logout = () => {
+    localStorage.removeItem("token");
     setUser(null);
   };
 
@@ -41,6 +48,7 @@ export const AuthProvider = ({ children }) => {
         user,
         isAuthenticated: !!user,
         login,
+        register,
         logout,
       }}
     >

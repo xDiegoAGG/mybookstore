@@ -1,17 +1,16 @@
 import { useContext, useState } from "react";
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import Card from 'react-bootstrap/Card';
-import Container from 'react-bootstrap/Container';
-import { useNavigate } from 'react-router-dom';
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import Card from "react-bootstrap/Card";
+import Container from "react-bootstrap/Container";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
 
-
 const Login = () => {
-
-  const { login } = useContext(AuthContext);
+  const { login, register } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [mode, setMode] = useState("login");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -19,11 +18,16 @@ const Login = () => {
     setLoading(true);
     setError("");
 
-    const username = e.target.username.value;
+    const email = e.target.email.value;
     const password = e.target.password.value;
+    const name = e.target.name?.value;
 
     try {
-      await login(username, password);
+      if (mode === "login") {
+        await login(email, password);
+      } else {
+        await register(name, email, password);
+      }
       navigate("/");
     } catch (err) {
       setError(err.message);
@@ -35,48 +39,69 @@ const Login = () => {
   return (
     <Container
       className="d-flex justify-content-center align-items-center"
-      style={{ minHeight: '80vh' }}
+      style={{ minHeight: "80vh" }}
     >
-      <Card className="p-10 shadow rounded-4" style={{ width: '25rem' }}>
+      <Card className="p-10 shadow rounded-4" style={{ width: "25rem" }}>
         <Card.Body>
-          <h3 className="text-center mb-4">Iniciar Sesión</h3>
+          <h3 className="text-center mb-4">
+            {mode === "login" ? "Iniciar Sesión" : "Registrarse"}
+          </h3>
 
           <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label>Nombre de usuario:</Form.Label>
-              <Form.Control
-                type="text"
-                name="username"
-                placeholder="username"
-                defaultValue="emilys"
+            {mode === "register" && (
+              <Form.Group className="mb-3">
+                <Form.Label>Nombre:</Form.Label>
+                <Form.Control type="text" name="name" placeholder="Tu nombre" required />
+              </Form.Group>
+            )}
 
+            <Form.Group className="mb-3">
+              <Form.Label>Email:</Form.Label>
+              <Form.Control
+                type="email"
+                name="email"
+                placeholder="tucorreo@ejemplo.com"
+                required
               />
-              <Form.Text className="text-muted">
-                Nunca compartiremos tu correo con nadie más.
-              </Form.Text>
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="formBasicPassword">
+            <Form.Group className="mb-3">
               <Form.Label>Contraseña:</Form.Label>
               <Form.Control
                 type="password"
                 name="password"
-                placeholder="123456"
-                defaultValue="emilyspass"
+                placeholder="••••••"
+                required
               />
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="formBasicCheckbox">
-              <Form.Check type="checkbox" label="Recuérdame" checked/>
-            </Form.Group>
+            {error && <p className="text-danger">{error}</p>}
 
             <Button
               variant="primary"
               type="submit"
-              className="w-100 mt-5 rounded-pill py-10"
+              className="w-100 mt-3 rounded-pill py-10"
               disabled={loading}
             >
-              {loading ? "Autenticado usuario..." : "Ingresar"}
+              {loading
+                ? "Procesando..."
+                : mode === "login"
+                ? "Ingresar"
+                : "Crear cuenta"}
+            </Button>
+
+            <Button
+              variant="link"
+              className="w-100 mt-2"
+              type="button"
+              onClick={() => {
+                setMode(mode === "login" ? "register" : "login");
+                setError("");
+              }}
+            >
+              {mode === "login"
+                ? "¿No tienes cuenta? Registrarse"
+                : "¿Ya tienes cuenta? Iniciar sesión"}
             </Button>
           </Form>
         </Card.Body>
