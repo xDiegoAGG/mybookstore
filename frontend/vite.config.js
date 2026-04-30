@@ -9,7 +9,7 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/api/books/': {
-        target: 'http://localhost:5001',
+        target: 'http://localhost:3003',
         changeOrigin: true,
       }
     }
