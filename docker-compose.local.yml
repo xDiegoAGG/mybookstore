@@ -1,0 +1,49 @@
+services:
+  postgres-auth:
+    image: postgres:16-alpine
+    container_name: mb-postgres-auth
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: authdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-auth-data:/var/lib/postgresql/data
+
+  postgres-users:
+    image: postgres:16-alpine
+    container_name: mb-postgres-users
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: usersdb
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-users-data:/var/lib/postgresql/data
+
+  dynamodb-local:
+    image: amazon/dynamodb-local:latest
+    container_name: mb-dynamodb-local
+    command: ["-jar", "DynamoDBLocal.jar", "-sharedDb"]
+    ports:
+      - "8000:8000"
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: mb-nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./infra/nginx/nginx.local.conf:/etc/nginx/nginx.conf:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - postgres-auth
+      - postgres-users
+      - dynamodb-local
+
+volumes:
+  postgres-auth-data:
+  postgres-users-data:
