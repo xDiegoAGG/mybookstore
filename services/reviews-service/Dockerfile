@@ -3,6 +3,7 @@ FROM node:20-alpine
 WORKDIR /app
 
 COPY shared /app/shared
+RUN npm install --omit=dev --prefix /app/shared/auth-middleware
 
 COPY services/reviews-service/package*.json /app/services/reviews-service/
 WORKDIR /app/services/reviews-service

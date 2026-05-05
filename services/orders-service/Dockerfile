@@ -3,6 +3,7 @@ FROM node:20-alpine
 WORKDIR /app
 
 COPY shared /app/shared
+RUN npm install --omit=dev --prefix /app/shared/auth-middleware
 
 COPY services/orders-service/package*.json /app/services/orders-service/
 WORKDIR /app/services/orders-service
