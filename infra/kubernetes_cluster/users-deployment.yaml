@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: users-service
-          image: <ECR_REGISTRY>/users-service:latest
+          image: 562448928616.dkr.ecr.us-east-1.amazonaws.com/mybookstore/users-service:latest
           ports:
             - name: http
               containerPort: 3002
