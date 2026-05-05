@@ -14,6 +14,12 @@ data:
       upstream cart_backend     { server cart-service:3005; }
       upstream orders_backend   { server orders-service:3006; }
 
+      proxy_hide_header Access-Control-Allow-Origin;
+      proxy_hide_header Access-Control-Allow-Methods;
+      proxy_hide_header Access-Control-Allow-Headers;
+      proxy_hide_header Access-Control-Allow-Credentials;
+      proxy_hide_header Access-Control-Max-Age;
+
       server {
         listen 80;
 
