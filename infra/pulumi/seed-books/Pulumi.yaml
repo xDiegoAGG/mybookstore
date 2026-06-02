@@ -1,0 +1,7 @@
+name: mybookstore-seed-books
+runtime: nodejs
+config:
+  aws:region:
+    value: us-east-1
+  dataStackName:
+    default: mybookstore-data/dev
