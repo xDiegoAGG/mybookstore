@@ -13,7 +13,7 @@ import {
   ListGroup,
 } from "react-bootstrap";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { FaArrowLeft, FaShoppingCart, FaStar, FaRegStar } from "react-icons/fa";
+import { FaArrowLeft, FaShoppingCart, FaStar, FaRegStar, FaHeart } from "react-icons/fa";
 import { api } from "../lib/api";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { CartContext } from "../context/CartContext.jsx";
@@ -183,6 +183,8 @@ const BookScreen = () => {
   const [qty, setQty] = useState(1);
   const [adding, setAdding] = useState(false);
   const [addedMsg, setAddedMsg] = useState("");
+  const [wishMsg, setWishMsg] = useState("");
+  const [wishLoading, setWishLoading] = useState(false);
 
   useEffect(() => {
     const fetchBook = async () => {
@@ -215,6 +217,28 @@ const BookScreen = () => {
       setAddedMsg(err.response?.data?.message || "No se pudo añadir");
     } finally {
       setAdding(false);
+    }
+  };
+
+  const handleAddWishlist = async () => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+    setWishLoading(true);
+    setWishMsg("");
+    try {
+      await api.post("/api/wishlist", {
+        bookId: book.id,
+        name: book.name,
+        price: book.price,
+        image: book.image,
+      });
+      setWishMsg("Agregado a tu wishlist");
+    } catch (err) {
+      setWishMsg(err.response?.data?.message || "No se pudo agregar");
+    } finally {
+      setWishLoading(false);
     }
   };
 
@@ -310,6 +334,22 @@ const BookScreen = () => {
               {addedMsg && (
                 <p className="text-center small mt-2 mb-0 text-success">
                   {addedMsg}
+                </p>
+              )}
+
+              <Button
+                onClick={handleAddWishlist}
+                disabled={wishLoading}
+                variant="outline-danger"
+                className="w-100 mt-2 d-flex justify-content-center align-items-center gap-2"
+              >
+                <FaHeart />
+                {wishLoading ? "Guardando…" : "Añadir a wishlist"}
+              </Button>
+
+              {wishMsg && (
+                <p className="text-center small mt-2 mb-0 text-danger">
+                  {wishMsg}
                 </p>
               )}
             </Card.Body>

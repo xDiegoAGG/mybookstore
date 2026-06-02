@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Container, Navbar, Nav, NavDropdown, Badge } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-import { FaShoppingCart, FaBookOpen, FaUserCircle } from "react-icons/fa";
+import { FaShoppingCart, FaBookOpen, FaUserCircle, FaHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { CartContext } from "../context/CartContext.jsx";
@@ -50,23 +50,30 @@ const Header = () => {
 
             <Nav className="ms-auto align-items-lg-center">
               {user && (
-                <LinkContainer to="/cart">
-                  <Nav.Link className="d-flex align-items-center gap-1 position-relative">
-                    <FaShoppingCart />
-                    Carrito
-                    {itemCount > 0 && (
-                      <Badge
-                        bg="warning"
-                        text="dark"
-                        pill
-                        className="ms-1"
-                        style={{ fontSize: "0.7rem" }}
-                      >
-                        {itemCount}
-                      </Badge>
-                    )}
-                  </Nav.Link>
-                </LinkContainer>
+                <>
+                  <LinkContainer to="/wishlist">
+                    <Nav.Link className="d-flex align-items-center gap-1">
+                      <FaHeart /> Wishlist
+                    </Nav.Link>
+                  </LinkContainer>
+                  <LinkContainer to="/cart">
+                    <Nav.Link className="d-flex align-items-center gap-1 position-relative">
+                      <FaShoppingCart />
+                      Carrito
+                      {itemCount > 0 && (
+                        <Badge
+                          bg="warning"
+                          text="dark"
+                          pill
+                          className="ms-1"
+                          style={{ fontSize: "0.7rem" }}
+                        >
+                          {itemCount}
+                        </Badge>
+                      )}
+                    </Nav.Link>
+                  </LinkContainer>
+                </>
               )}
 
               {!user ? (
