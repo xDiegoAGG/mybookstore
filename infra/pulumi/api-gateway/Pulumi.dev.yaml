@@ -1,0 +1,6 @@
+config:
+  aws:region: us-east-1
+  mybookstore-api-gateway:networkStackName: xDiegoAGG/mybookstore-network/dev
+  mybookstore-api-gateway:eksStackName: xDiegoAGG/mybookstore-eks/dev
+  mybookstore-api-gateway:k8sStackName: xDiegoAGG/mybookstore-k8s-apps/dev
+  mybookstore-api-gateway:lambdasStackName: xDiegoAGG/mybookstore-lambdas/dev

@@ -1,0 +1,5 @@
+config:
+  aws:region: us-east-1
+  mybookstore-lambdas:jwtSecret:
+    secure: AAABAARjV6G0hAXEQ4lWBjg6lMElEib8RSkPc3hVHISFze6YcwXxOjlPkKC1cpgFFsvhWTl0162eLm4q44f6aJrC+rAem95x3JqpIeBuypzPqq1CD1IK1r4bGA5EGMJ5
+  mybookstore-lambdas:dataStackName: xDiegoAGG/mybookstore-data/dev

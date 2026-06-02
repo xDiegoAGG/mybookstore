@@ -1,0 +1,11 @@
+name: mybookstore-lambdas
+runtime: nodejs
+config:
+  aws:region:
+    value: us-east-1
+  dataStackName:
+    default: mybookstore-data/dev
+  jwtSecret:
+    secret: true
+  labRoleName:
+    default: LabRole

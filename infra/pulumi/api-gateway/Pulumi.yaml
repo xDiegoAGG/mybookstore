@@ -1,0 +1,15 @@
+name: mybookstore-api-gateway
+runtime: nodejs
+config:
+  aws:region:
+    value: us-east-1
+  networkStackName:
+    default: vmybookstore-network/de
+  eksStackName:
+    default: mybookstore-eks/dev
+  k8sStackName:
+    default: mybookstore-k8s-apps/dev
+  lambdasStackName:
+    default: mybookstore-lambdas/dev
+  stageName:
+    default: "$default"
