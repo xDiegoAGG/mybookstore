@@ -1,0 +1,12 @@
+name: mybookstore-data
+runtime: nodejs
+config:
+  aws:region:
+    value: us-east-1
+  networkStackName:
+    default: mybookstore-network/dev
+  dbMasterUsername:
+    default: bookstore
+  dbMasterPassword:
+    default: bookstore123
+    secret: true

@@ -1,0 +1,5 @@
+config:
+  aws:region: us-east-1
+  mybookstore-data:dbMasterPassword:
+    secure: AAABAF/idVEG20oTCRQkDinKCEvVBGer2GvOzbmUB5Lm0EARVVnWUvEGTL8=
+  mybookstore-data:networkStackName: xDiegoAGG/mybookstore-network/dev
