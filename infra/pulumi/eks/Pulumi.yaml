@@ -1,0 +1,19 @@
+name: mybookstore-eks
+runtime: nodejs
+config:
+  aws:region:
+    value: us-east-1
+  networkStackName:
+    default: mybookstore-network/dev
+  clusterName:
+    default: mybookstore
+  nodeInstanceType:
+    default: t3.medium
+  desiredNodes:
+    default: "2"
+  minNodes:
+    default: "1"
+  maxNodes:
+    default: "3"
+  labRoleName:
+    default: LabRole
