@@ -3,7 +3,9 @@ import { EmptyCartError } from "../../../../domain/errors/EmptyCartError.js";
 export const makeOrdersController = ({ createOrder, listMyOrders }) => ({
   create: async (req, res, next) => {
     try {
-      const order = await createOrder.execute({ userId: req.user.userId });
+      const order = await createOrder.execute({
+        userId: req.user.userId,
+      });
       res.status(201).json(order);
     } catch (err) {
       if (err instanceof EmptyCartError) {
