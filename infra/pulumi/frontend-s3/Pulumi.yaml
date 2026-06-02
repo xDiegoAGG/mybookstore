@@ -1,0 +1,7 @@
+name: mybookstore-frontend-s3
+runtime: nodejs
+config:
+  aws:region:
+    value: us-east-1
+  bucketName:
+    default: diegoaggbookstore-frontend
