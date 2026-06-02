@@ -10,6 +10,7 @@ const HomeScreen = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
+  const [searching, setSearching] = useState(false);
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -28,13 +29,28 @@ const HomeScreen = () => {
     fetchBooks();
   }, []);
 
-  const filtered = books.filter((b) => {
-    if (!query.trim()) return true;
-    const q = query.toLowerCase();
-    return (
-      b.name?.toLowerCase().includes(q) || b.author?.toLowerCase().includes(q)
-    );
-  });
+
+
+  useEffect(() => {
+    const q = query.trim();
+    if (!q) return;
+
+    const t = setTimeout(async () => {
+      setSearching(true);
+      try {
+        const { data } = await api.get(`/api/search?q=${encodeURIComponent(q)}`);
+        setBooks(Array.isArray(data?.items) ? data.items : []);
+        setError("");
+      } catch (err) {
+        console.error("Lambda search error:", err);
+      } finally {
+        setSearching(false);
+      }
+    }, 400);
+    return () => clearTimeout(t);
+  }, [query]);
+
+  const filtered = books;
 
   return (
     <>
@@ -46,6 +62,7 @@ const HomeScreen = () => {
             <h2 className="mb-1 fw-bold">Catálogo</h2>
             <p className="text-muted mb-0">
               {filtered.length} {filtered.length === 1 ? "libro" : "libros"}
+              {searching && <span className="ms-2">(buscando…)</span>}
             </p>
           </Col>
           <Col md="auto">
