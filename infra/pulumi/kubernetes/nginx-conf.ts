@@ -1,0 +1,30 @@
+export const nginxConf = `
+events {}
+http {
+  upstream auth_backend     { server auth-service:3001; }
+  upstream users_backend    { server users-service:3002; }
+  upstream catalog_backend  { server catalog-service:3003; }
+  upstream reviews_backend  { server reviews-service:3004; }
+  upstream cart_backend     { server cart-service:3005; }
+  upstream orders_backend   { server orders-service:3006; }
+
+  proxy_hide_header Access-Control-Allow-Origin;
+  proxy_hide_header Access-Control-Allow-Methods;
+  proxy_hide_header Access-Control-Allow-Headers;
+  proxy_hide_header Access-Control-Allow-Credentials;
+  proxy_hide_header Access-Control-Max-Age;
+
+  server {
+    listen 80;
+
+    location /api/auth/    { proxy_pass http://auth_backend; }
+    location /api/users/   { proxy_pass http://users_backend; }
+    location /api/books/   { proxy_pass http://catalog_backend; }
+    location /api/reviews/ { proxy_pass http://reviews_backend; }
+    location /api/cart     { proxy_pass http://cart_backend; }
+    location /api/orders   { proxy_pass http://orders_backend; }
+
+    location = /healthz { return 200 "ok\\n"; }
+  }
+}
+`;

@@ -1,0 +1,17 @@
+name: mybookstore-k8s-apps
+runtime: nodejs
+config:
+  aws:region:
+    value: us-east-1
+  networkStackName:
+    default: mybookstore-network/dev
+  dataStackName:
+    default: mybookstore-data/dev
+  ecrStackName:
+    default: mybookstore-ecr/dev
+  eksStackName:
+    default: mybookstore-eks/dev
+  jwtSecret:
+    secret: true
+  imageTag:
+    default: latest

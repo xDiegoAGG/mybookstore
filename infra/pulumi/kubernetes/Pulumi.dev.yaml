@@ -1,0 +1,8 @@
+config:
+  aws:region: us-east-1
+  mybookstore-k8s-apps:jwtSecret:
+    secure: AAABALAcFPfEbH42BuZpT6JdinJCEi8Yu6G5lP+wZHuvy0Nvf4n3qJr8/+vG8O2Kuody0jwoN9fZvDYm4aQXO7gZLPSzN5gWIxxeD22oBVboGmhRagBdBRzvVBEHLEpK
+  mybookstore-k8s-apps:networkStackName: xDiegoAGG/mybookstore-network/dev
+  mybookstore-k8s-apps:dataStackName: xDiegoAGG/mybookstore-data/dev
+  mybookstore-k8s-apps:ecrStackName: xDiegoAGG/mybookstore-ecr/dev
+  mybookstore-k8s-apps:eksStackName: xDiegoAGG/mybookstore-eks/dev
