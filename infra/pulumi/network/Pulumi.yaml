@@ -1,0 +1,5 @@
+name: mybookstore-network
+runtime: nodejs
+config:
+  aws:region:
+    value: us-east-1
