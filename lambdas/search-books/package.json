@@ -1,0 +1,11 @@
+{
+  "name": "search-books-lambda",
+  "version": "1.0.0",
+  "description": "Lambda HTTP publica para buscar libros en tb_books con filtros",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.660.0",
+    "@aws-sdk/lib-dynamodb": "^3.660.0"
+  }
+}
