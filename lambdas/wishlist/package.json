@@ -1,0 +1,12 @@
+{
+  "name": "wishlist-lambda",
+  "version": "1.0.0",
+  "description": "Lambda HTTP autenticada para CRUD de wishlist (lista de deseos por usuario)",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.660.0",
+    "@aws-sdk/lib-dynamodb": "^3.660.0",
+    "jsonwebtoken": "^9.0.2"
+  }
+}
